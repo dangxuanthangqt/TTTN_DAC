@@ -19,3 +19,6 @@ export const clearAllToken=()=>{
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("accessToken");
 }
+export const clearAllItem =()=>{
+    return localStorage.clear();
+}

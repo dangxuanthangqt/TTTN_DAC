@@ -1,4 +1,4 @@
-const jwtHelper = require('../Helpers/jwt.helper');
+const jwtHelper = require("../../Helpers/jwt_helper");
 require('dotenv').config();
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
