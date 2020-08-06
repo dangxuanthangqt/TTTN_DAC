@@ -31,6 +31,7 @@ router.post("/login", async (req, res, next) => {
           accessTokenSecret,
           parseInt(accessTokenLife)
         );
+        //console.log(dataInToken);
         return res.status(200).send({
           accessToken: accessToken,
         });
@@ -54,12 +55,12 @@ router.post("/register", async (req, res, next) => {
     });
     if (checkEmail)
       return res.status(403).send({
-        message: "ERROR 403",
+        message: "Email or account  exist !",
       });
 
-    const Salt = await bcrypt.genSalt(10);
-    const Hash = await bcrypt.hash(user.password, Salt);
-    user.password = Hash;
+    // const Salt = await bcrypt.genSalt(10);
+    // const Hash = await bcrypt.hash(user.password, Salt);
+    // user.password = Hash;
     const role_id = await roleModel
       .findOne({ name: user.role_name }, "_id")
       .exec();
@@ -72,6 +73,7 @@ router.post("/register", async (req, res, next) => {
         ...user,
         role: role_id,
       });
+     
       let response = await userTemp.save();
       res.send({
         message: "Register success !",
@@ -79,6 +81,7 @@ router.post("/register", async (req, res, next) => {
       });
     }
   } catch (e) {
+    console.log(e)
     res.status(500).send({
       message: "ERROR 500",
     });
