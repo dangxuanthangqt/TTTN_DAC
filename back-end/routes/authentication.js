@@ -10,7 +10,7 @@ const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
 router.post("/login", async (req, res, next) => {
   let user = req.body;
   try {
-    let checkAcc = await userModel
+    var checkAcc = await userModel
       .findOne({ account_name: user.account_name })
       .populate("role");
     // console.log(checkAcc);
@@ -20,7 +20,12 @@ router.post("/login", async (req, res, next) => {
       });
     } else {
       let isMatch = await bcrypt.compare(user.password, checkAcc.password);
+
       if (isMatch) {
+        if (checkAcc.status === "disable")
+          return res.status(403).send({
+            message: "User is disable !",
+          });
         let dataInToken = {
           _id: checkAcc._id,
           account_name: checkAcc.account_name,
@@ -35,11 +40,10 @@ router.post("/login", async (req, res, next) => {
         return res.status(200).send({
           accessToken: accessToken,
         });
-      }else return  res.status(403).send(
-        {
-          message:"Password error !"
-        }
-      )
+      } else
+        return res.status(403).send({
+          message: "Password error !",
+        });
     }
   } catch (E) {
     return es.status(500).send({
@@ -73,7 +77,7 @@ router.post("/register", async (req, res, next) => {
         ...user,
         role: role_id,
       });
-     
+
       let response = await userTemp.save();
       res.send({
         message: "Register success !",
@@ -81,7 +85,7 @@ router.post("/register", async (req, res, next) => {
       });
     }
   } catch (e) {
-    console.log(e)
+    console.log(e);
     res.status(500).send({
       message: "ERROR 500",
     });
